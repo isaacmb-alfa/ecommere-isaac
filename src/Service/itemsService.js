@@ -9,7 +9,7 @@ import axios from 'axios'
 //* 2) establecemos nuestro endpoint 
 //* -> SNAKE_CASE para entornos o variables globales
 // -> localhost:3000 es el puerto que nos da el backend
-const BASE_URL = 'http://localhost:3000' // esta opción la pueden cambiar si subimos el repo de github a render
+const BASE_URL = import.meta.env.VITE_URL_SERVER;// esta opción la pueden cambiar si subimos el repo de github a render
 
 const getAllItemsService = () => axios.get(`${BASE_URL}/items`);
 const getOneItemService = (id) => axios.get(`${BASE_URL}/items/${id}`);

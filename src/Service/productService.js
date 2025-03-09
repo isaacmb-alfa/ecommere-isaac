@@ -1,6 +1,5 @@
 import axios from 'axios';
-
-const BASE_URL = 'http://localhost:3000'; // URL de la API
+const BASE_URL = import.meta.env.VITE_URL_SERVER; // URL de la API
 
 // Obtener todos los productos
 export const getProductsService = async () => {

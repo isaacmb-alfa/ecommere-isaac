@@ -1,5 +1,6 @@
 import axios from 'axios'
-const BASE_URL = 'http://localhost:3000';
+
+const BASE_URL = import.meta.env.VITE_URL_SERVER;
 
 const registerUserService = (data) => axios.post(`${BASE_URL}/users`, data);
 const loginUserService = (data) => axios.post(`${BASE_URL}/login`, data); 
