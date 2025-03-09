@@ -1,0 +1,138 @@
+@use 'variables'as *;
+@use "sass:color";
+
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.7);
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    z-index: 1000;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s ease-in-out, visibility 0.3s ease-in-out;
+}
+
+.modal-overlay.show {
+    opacity: 1;
+    visibility: visible;
+}
+
+.modal {
+    position: relative;
+    background: $color-tertiary;
+    width: 25%;
+    min-height: 100vh;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+    transition: transform 0.3s ease-in-out;
+    transform: translateX(100%);
+}
+
+.modal-overlay.show .modal {
+    transform: translateX(0);
+}
+
+.modal-header {
+    padding: 20px;
+    border-bottom: 1px solid #ddd;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.close-button {
+    background: $color-secundary;
+    border: none;
+    font-size: 24px;
+    cursor: pointer;
+    padding: 0 10px;
+}
+
+.modal-body {
+    padding: 20px;
+    overflow-y: auto;
+    max-height: 80vh;
+}
+
+.cart-items {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.cart-item {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    background: $color-tertiary;
+}
+
+.cart-item-image img {
+    width: 50px;
+    height: 50px;
+    object-fit: cover;
+    border-radius: 5px;
+}
+
+.cart-item-info h3 {
+    margin: 0;
+}
+
+.cart-item-actions {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.cart-item-actions input {
+    width: 50px;
+    text-align: center;
+}
+
+.cart-item-actions button {
+    background: $color-secundary;
+    color: $color-tertiary;
+    border: none;
+    padding: 5px 10px;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+
+    &:hover {
+        background: color.scale($color-secundary, $blackness: 10%);
+    }
+}
+
+.modal-footer {
+    padding: 20px;
+    border-top: 1px solid #ddd;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.total h3 {
+    margin: 0;
+}
+
+.modal-footer button {
+    padding: 10px 20px;
+    background: $color-secundary;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+
+    &:hover {
+        background: color.scale($color-secundary, $blackness: 10%);
+    }
+}

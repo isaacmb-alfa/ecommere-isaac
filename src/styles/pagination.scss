@@ -1,0 +1,35 @@
+@use 'variables'as *;
+@use "sass:color";
+
+.pagination {
+    display: flex;
+    justify-content: center;
+    padding: 1rem 0;
+    list-style: none; 
+
+    .page-item {
+        margin: 0 0.25rem;
+
+        &.active .page-link {
+            background-color: $color-primary;
+            color: #fff;
+        }
+
+        .page-link {
+            display: block;
+            padding: 0.5rem 0.75rem;
+            background-color: #f9f9f9;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            text-decoration: none;
+            color: #333;
+            transition: background-color 0.3s;
+            cursor: pointer; 
+            
+            &:hover {
+                background-color: $color-secundary;
+                color: #fff;
+            }
+        }
+    }
+}
