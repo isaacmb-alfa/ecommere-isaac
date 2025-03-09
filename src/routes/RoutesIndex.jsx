@@ -1,6 +1,6 @@
 import { Routes, Route } from 'react-router';
 import { Home, Category, Favorite, SingIn, SingUp, Dashboard } from '@/pages';
-import Navbar from '@/components/navbar';
+import Navbar from '@/components/Navbar';
 import { useAuthContext } from '@/Hook/useAuthContext';
 import { AuthProvider } from '@/context/AuthContext';
 import ProtectedRoute from '@/Controller/ProtectedRoute';
