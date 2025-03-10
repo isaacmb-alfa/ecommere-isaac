@@ -1,18 +1,21 @@
 import { useState, useEffect } from 'react';
-import { getProductsService, updateProductService, addProductService } from '@/Service/productService';
+import { getProductsService, updateProductService, addProductService, deleteProductService } from '@/Service/productService';
 import ProductForm from './ProductForm';
 import Pagination from './Pagination';
+import ConfirmationModal from './ConfirmationModal';
 import { useForm } from 'react-hook-form';
 import '@/styles/products.scss';
 
 function Products() {
-    const {reset } = useForm();
+    const { reset } = useForm();
     const [products, setProducts] = useState([]);
     const [currentPage, setCurrentPage] = useState(1);
     const [productsPerPage] = useState(10);
     const [editingProduct, setEditingProduct] = useState(null);
     const [successMessage, setSuccessMessage] = useState('');
     const [errorMessage, setErrorMessage] = useState('');
+    const [showModal, setShowModal] = useState(false);
+    const [productToDelete, setProductToDelete] = useState(null);
 
     useEffect(() => {
         const fetchProducts = async () => {
@@ -25,13 +28,9 @@ function Products() {
     const onSubmit = async (data) => {
         try {
             if (editingProduct) {
-                console.log(editingProduct);
-                
                 await updateProductService(editingProduct.id, data);
                 setSuccessMessage('Product updated successfully!');
             } else {
-                console.log('data:', data);
-                
                 await addProductService(data);
                 setSuccessMessage('Product added successfully!');
             }
@@ -44,16 +43,31 @@ function Products() {
         }
     };
 
-    useEffect(() => {
-        if (successMessage || errorMessage) {
-            const timer = setTimeout(() => {
-                setSuccessMessage('');
-                setErrorMessage('');
-            }, 5000);
-
-            return () => clearTimeout(timer);
+    const handleDeleteProduct = async (id) => {
+        try {
+            await deleteProductService(id);
+            setSuccessMessage('Product deleted successfully!');
+            const response = await getProductsService();
+            setProducts(response.data);
+        } catch (error) {
+            setErrorMessage('An error occurred. Please try again.');
         }
-    }, [successMessage, errorMessage]);
+    };
+
+    const confirmDeleteProduct = (product) => {
+        setProductToDelete(product);
+        setShowModal(true);
+    };
+
+    const handleConfirmDelete = () => {
+        handleDeleteProduct(productToDelete.id);
+        setShowModal(false);
+    };
+
+    const handleCancelDelete = () => {
+        setProductToDelete(null);
+        setShowModal(false);
+    };
 
     // Obtener productos actuales
     const indexOfLastProduct = currentPage * productsPerPage;
@@ -64,6 +78,7 @@ function Products() {
     const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
     return (
+        <>
         <div className='table-items-container'>
             <h2>Items</h2>
             {successMessage && <div className="success-message">{successMessage}</div>}
@@ -92,6 +107,7 @@ function Products() {
                             <td>{product.sku}</td>
                             <td>
                                 <button onClick={() => setEditingProduct(product)}>Edit</button>
+                                <button onClick={() => confirmDeleteProduct(product)}>Delete</button>
                             </td>
                         </tr>
                     ))}
@@ -111,7 +127,16 @@ function Products() {
                     reset={reset}
                 />
             )}
+            
+            {showModal && (
+                <ConfirmationModal
+                    message={`¿Deseas borrar el producto ${productToDelete.product_name}?`}
+                    onConfirm={handleConfirmDelete}
+                    onCancel={handleCancelDelete}
+                />
+            )}
         </div>
+        </>
     );
 }
 

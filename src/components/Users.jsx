@@ -1,17 +1,22 @@
 import { useState, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
-import { getAllUsersService, updateUserService, registerUserService } from '@/Service/userService';
+import {
+    getAllUsersService, updateUserService, registerUserService, deleteUserService
+} from '@/Service/userService';
+import { useAuthContext } from '@/Hook/useAuthContext';
+import ConfirmationModal from './ConfirmationModal';
 import '@/styles/users.scss';
 
 function Users() {
+    const { userId } = useAuthContext(); // Obtener el ID del usuario autenticado
     const [users, setUsers] = useState([]);
     const [editingUser, setEditingUser] = useState(null);
     const [isCreatingUser, setIsCreatingUser] = useState(false);
     const [successMessage, setSuccessMessage] = useState('');
     const [errorMessage, setErrorMessage] = useState('');
+    const [showModal, setShowModal] = useState(false);
+    const [userToDelete, setUserToDelete] = useState(null);
     const { register, handleSubmit, reset, formState: { errors } } = useForm();
-    // console.log(users);
-
 
     useEffect(() => {
         const token = localStorage.getItem('token');
@@ -34,12 +39,41 @@ function Users() {
             }
             setEditingUser(null);
             reset();
-            const response = await getAllUsersService();
+            const token = localStorage.getItem('token');
+            const response = await getAllUsersService(token);
             setUsers(response.data);
         } catch (error) {
             setErrorMessage('An error occurred. Please try again.');
         }
     };
+
+    const handleDeleteUser = async (id) => {
+        try {
+            await deleteUserService(id);
+            setSuccessMessage('User deleted successfully!');
+            const token = localStorage.getItem('token');
+            const response = await getAllUsersService(token);
+            setUsers(response.data);
+        } catch (error) {
+            setErrorMessage('An error occurred. Please try again.');
+        }
+    };
+
+    const confirmDeleteUser = (user) => {
+        setUserToDelete(user);
+        setShowModal(true);
+    };
+
+    const handleConfirmDelete = () => {
+        handleDeleteUser(userToDelete.id);
+        setShowModal(false);
+    };
+
+    const handleCancelDelete = () => {
+        setUserToDelete(null);
+        setShowModal(false);
+    };
+
     useEffect(() => {
         if (successMessage || errorMessage) {
             const timer = setTimeout(() => {
@@ -75,7 +109,18 @@ function Users() {
                             <td>{user.email}</td>
                             <td>{user.role}</td>
                             <td>
-                                <button onClick={() => setEditingUser(user)}>Edit</button>
+                                <button
+                                    onClick={() => setEditingUser(user)}
+                                    disabled={user.id === userId}  // Deshabilitar el botón de edición si el usuario es el mismo que el autenticado
+                                >
+                                    Edit
+                                </button>
+                                <button
+                                    onClick={() => confirmDeleteUser(user)}
+                                    disabled={user.id === userId} // Deshabilitar el botón de eliminación si el usuario es el mismo que el autenticado
+                                >
+                                    Delete
+                                </button>
                             </td>
                         </tr>
                     ))}
@@ -150,10 +195,17 @@ function Users() {
                         </>
                     )}
                     <div className="form-buttons">
-                    <button type="submit">{editingUser ? 'Save' : 'Add'}</button>
-                    <button type="button" onClick={() => { setEditingUser(null); setIsCreatingUser(false); reset(); }}>Cancel</button>
+                        <button type="submit">{editingUser ? 'Save' : 'Add'}</button>
+                        <button type="button" onClick={() => { setEditingUser(null); setIsCreatingUser(false); reset(); }}>Cancel</button>
                     </div>
                 </form>
+            )}
+            {showModal && (
+                <ConfirmationModal
+                    message={`¿Deseas borrar al usuario ${userToDelete.first_name} ${userToDelete.last_name}?`}
+                    onConfirm={handleConfirmDelete}
+                    onCancel={handleCancelDelete}
+                />
             )}
         </div>
     );

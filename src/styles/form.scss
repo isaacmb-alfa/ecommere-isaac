@@ -55,7 +55,7 @@
 
     button {
         padding: 0.75rem;
-        background-color: $color-primary;
+        background-color: $color-secundary;
         color: #fff;
         border: none;
         border-radius: 4px;
@@ -63,7 +63,7 @@
         transition: background-color 0.3s;
 
         &:hover {
-            background-color: color.scale($color-primary, $blackness: 10%);
+            background-color: color.scale($color-secundary, $blackness: 10%);
         }
 
         &:not(:last-child) {

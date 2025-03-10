@@ -7,6 +7,7 @@ const loginUserService = (data) => axios.post(`${BASE_URL}/login`, data);
 const getAllUsersService = (jwtToken) => axios.get(`${BASE_URL}/users`,{ headers: { Authorization: `Bearer ${jwtToken}` } });
 const getMeUserService = (jwtToken) => axios.get(`${BASE_URL}/me`, { headers: { Authorization: `Bearer ${jwtToken}` } });
 const updateUserService = (id, data) => axios.put(`${BASE_URL}/users/${id}`, data);
+const deleteUserService = (id) => axios.delete(`${BASE_URL}/users/${id}`);
 
 
 export {
@@ -14,5 +15,6 @@ export {
     loginUserService,
     getAllUsersService,
     getMeUserService,
-    updateUserService
+    updateUserService,
+    deleteUserService
 }
